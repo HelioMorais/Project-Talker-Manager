@@ -4,7 +4,7 @@ const token = require('../utils/token');
 
 const routerLogin = express.Router();
 
-routerLogin.post('/', async (req, res) => {
+routerLogin.post('/login', async (req, res) => {
     const { email, password } = req.body;
   
     if ([email, password].includes(undefined)) {
