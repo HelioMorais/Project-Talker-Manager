@@ -53,3 +53,17 @@ app.post('/talker', valAuth, valName, valAge, valTalk,
 
   return res.status(201).json(newTalker);
 });
+
+app.put('/talker/:id', valAuth, valName, valAge, valTalk,
+  valRate, async (req, res) => {
+  const { id } = req.params;
+  const { name, age, talk: { watchedAt, rate } } = req.body;
+  const talkers = await readFile();
+  const index = talkers.findIndex((talker) => talker.id === Number(id));
+  if (!talkers[index]) {
+    return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
+  }
+  talkers[index] = { id: Number(id), name, age, talk: { watchedAt, rate } };
+  await writeFile(talkers);
+  return res.status(200).json(talkers[index]);
+});
