@@ -1,6 +1,7 @@
 const express = require('express');
 const readFile = require('./utils/readFile');
 const generateToken = require('./utils/generateToken');
+const validateLogin = require('./middlewares/validateLogin');
 
 const app = express();
 app.use(express.json());
@@ -32,7 +33,7 @@ app.get('/talker/:id', async (req, res) => {
   return res.status(200).json(talkerId);
 });
 
-app.post('/login', (_req, res) => {
+app.post('/login', validateLogin, (_req, res) => {
   const token = generateToken();
   return res.status(200).json({ token });
 });
