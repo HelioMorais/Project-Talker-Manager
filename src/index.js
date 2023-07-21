@@ -67,3 +67,12 @@ app.put('/talker/:id', valAuth, valName, valAge, valTalk,
   await writeFile(talkers);
   return res.status(200).json(talkers[index]);
 });
+
+app.delete('/talker/:id', valAuth, async (req, res) => {
+  const { id } = req.params;
+  const talkers = await readFile();
+  const filterTalkers = talkers.filter((element) => element.id !== Number(id));
+  const upTalkers = JSON.stringify(filterTalkers, null, 2);
+  await writeFile(upTalkers);
+  return res.status(204).end();
+});
