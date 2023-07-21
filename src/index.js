@@ -2,6 +2,11 @@ const express = require('express');
 const readFile = require('./utils/readFile');
 const generateToken = require('./utils/generateToken');
 const validateLogin = require('./middlewares/validateLogin');
+const writeFile = require('./utils/writeFile');
+const valAuth = require('./middlewares/valAuth');
+const valName = require('./middlewares/valName');
+const valAge = require('./middlewares/valAge');
+const { valTalk, valRate } = require('./middlewares/valTalk');
 
 const app = express();
 app.use(express.json());
@@ -36,4 +41,15 @@ app.get('/talker/:id', async (req, res) => {
 app.post('/login', validateLogin, (_req, res) => {
   const token = generateToken();
   return res.status(200).json({ token });
+});
+
+app.post('/talker', valAuth, valName, valAge, valTalk,
+  valRate, async (req, res) => {
+  const { name, age, talk: { watchedAt, rate } } = req.body;
+  const talkers = await readFile();
+  const newTalker = { id: talkers.length + 1, name, age, talk: { watchedAt, rate } };
+  talkers.push(newTalker);
+  await writeFile(talkers);
+
+  return res.status(201).json(newTalker);
 });
