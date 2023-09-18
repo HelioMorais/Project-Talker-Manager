@@ -76,3 +76,10 @@ app.delete('/talker/:id', valAuth, async (req, res) => {
   await writeFile(upTalkers);
   return res.status(204).end();
 });
+
+app.get('/talker/search', valAuth, async (req, res) => {
+  const { q } = req.query;
+  const talkers = await readFile();
+  const filterTalkers = talkers.filter((element) => element.name.includes(q));
+  return res.status(200).json(filterTalkers);
+});
